@@ -132,7 +132,7 @@ with col2:
                 image_np = np.array(image)
                 image_np = cv2.cvtColor(image_np, cv2.COLOR_RGB2BGR)
 
-                res = model.predict(image, conf=confidence)
+                res = model.predict(image, conf=0.15,iou=0.2)
                 boxes = res[0].boxes
 
                 if boxes:

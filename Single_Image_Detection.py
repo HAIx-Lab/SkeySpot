@@ -135,7 +135,7 @@ with col2:
             st.image(default_detected_image, caption='Detected Image', use_column_width=True)
         else:
             if st.sidebar.button('Detect Objects'):
-                res = model.predict(uploaded_image, conf=confidence)
+                res = model.predict(uploaded_image, conf=0.15, iou = 0.2)
                 boxes = res[0].boxes
                 
                 if not boxes:
@@ -214,18 +214,22 @@ if st.session_state['detections']:
 # Detection Summary
 if st.session_state['detection_summary'] is not None:
     st.subheader("Detection Summary")
-    st.table(st.session_state['detection_summary'])
-    
-    # Download button
-    zip_path = os.path.join(output_dir, "detection_results.zip")
-    if os.path.exists(zip_path):
-        with open(zip_path, "rb") as f:
-            st.download_button(
-                label="Download Results (Images & Summary)",
-                data=f,
-                file_name="detection_results.zip",
-                mime="application/zip"
-            )
+    # Wrap the table in a container with a max width
+    with st.container():
+        col1, col2 = st.columns([1, 2])  # Creates two columns with the first taking 1/3 of the space
+        with col1:
+            st.table(st.session_state['detection_summary'])
+        
+        # Move download button to align with the table
+        zip_path = os.path.join(output_dir, "detection_results.zip")
+        if os.path.exists(zip_path):
+            with open(zip_path, "rb") as f:
+                st.download_button(
+                    label="Download Results (Images & Summary)",
+                    data=f,
+                    file_name="detection_results.zip",
+                    mime="application/zip"
+                )
 
 # Cleanup function
 def cleanup_files():
